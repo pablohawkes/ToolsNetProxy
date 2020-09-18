@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading;
 using System.Xml.Serialization;
@@ -36,10 +35,12 @@ namespace ToolsNetProxy
     {
         [XmlElement("Forwarder")]
         public List<Forwarder> Forwarder { get; set; }
+
         public void StartActiveForwarders()
         {
             foreach (var forw in Forwarder)
             {
+
                 if (forw.Active)
 
                     forw.StartForwarder();
@@ -69,36 +70,49 @@ namespace ToolsNetProxy
         public int DestinationPort { get; set; }
 
         [XmlElement("ReplaceString")]
-        public List<ReplaceString> replaceString { get; set; }
+        public List<ReplaceString> ReplaceString { get; set; }
 
         Thread t;
-        private Socket _mainSocket;
+        TcpPortForwarder TcpForwarder;
+
         private static readonly log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         public void StartForwarder()
         {
-            t = new Thread(new ThreadStart(ThreadWorker));
-            t.Start();
+            try
+            {
+                log.Debug("Starting Forwarder " + Name + "...");
+                t = new Thread(new ThreadStart(ThreadWorker));
+                t.Start();
+            }
+            catch (Exception exc)
+            {
+                log.Error("Error on Start Forwarder " + Name, exc);
+            }
+        }
+
+        public void StopForwarder()
+        {
+            try
+            {
+                //TODO, how to stop thread cleanly?
+                t.Abort();
+                log.Debug("Stopping Forwarder " + Name + "...");
+            }
+            catch (Exception exc)
+            {
+                log.Error("Error on Stop Forwarder " + Name, exc);
+            }
         }
 
         private void ThreadWorker()
         {
-            /* TODO
-            var LocalEndPoint = new IPEndPoint(IPAddress.Parse("0.0.0.0"))
-            _mainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp); ;
+            var localEndPoint = new IPEndPoint(IPAddress.Parse(SourceIp), SourcePort);
+            var remoteEndPoint = new IPEndPoint(IPAddress.Parse(DestinationIp), DestinationPort);
 
-            _mainSocket.Bind(local);
-            _mainSocket.Listen(10);
-
-            while (true)
-            {
-                var source = _mainSocket.Accept();
-                var destination = new TcpForwarderSlim();
-                var state = new State(source, destination._mainSocket);
-                destination.Connect(remote, source);
-                source.BeginReceive(state.Buffer, 0, state.Buffer.Length, 0, OnDataReceive, state);
-            }
-            */
+            log.Debug("Starting Threadworker: Source: " + SourceIp + ":" + SourcePort.ToString() + " - Destination: " + DestinationIp + ":" + DestinationPort.ToString());
+            TcpForwarder = new TcpPortForwarder();
+            TcpForwarder.Start(localEndPoint, remoteEndPoint, ReplaceString, Name);
         }
     }
 

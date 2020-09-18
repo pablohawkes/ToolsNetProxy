@@ -1,12 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Forwarders>
-  <Forwarder Name="ToolsNet puerto reemplazar por 6570" Active="true" SourceIp="0.0.0.0" SourcePort="6543" DestinationIp="127.0.0.1" DestinationPort="6544">
-    <ReplaceString OriginalString="192.168.0.1" NewString="127.0.0.1" />
-    <ReplaceString OriginalString="127.0.0.1" NewString="127.0.0.1" />
+  <Forwarder Name="ToolsNet 6570" Active="true" SourceIp="0.0.0.0" SourcePort="6570" DestinationIp="172.18.4.44" DestinationPort="6570">
+    <ReplaceString OriginalString="172.18.4.44" NewString="192.168.10.1" />
+    <ReplaceString OriginalString="192.168.10.50" NewString="172.20.156.154" />
   </Forwarder>
-
-  <Forwarder Name="ToolsNet puerto reemplazar por 6572" Active="true" SourceIp="0.0.0.0" SourcePort="6545" DestinationIp="127.0.0.1" DestinationPort="6546">
-    <ReplaceString OriginalString="192.168.0.1" NewString="127.0.0.1" />
-    <ReplaceString OriginalString="127.0.0.1" NewString="127.0.0.1" />
+  <Forwarder Name="ToolsNet 6572" Active="true" SourceIp="0.0.0.0" SourcePort="6572" DestinationIp="172.18.4.44" DestinationPort="6572">
+    <ReplaceString OriginalString="172.18.4.44" NewString="192.168.10.1" />
+    <ReplaceString OriginalString="192.168.10.50" NewString="172.20.156.154" />
   </Forwarder>
 </Forwarders>

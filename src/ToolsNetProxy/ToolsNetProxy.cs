@@ -42,28 +42,45 @@ namespace ToolsNetProxy
                 return;
             }
 
+            log.Debug("Starting forwarders...");
             //TODO
             foreach (var a in config.forwarders.Forwarder)
             {
-                log.Debug(a.Name);
+                a.StartForwarder();
             }
         }
 
         protected override void OnStop()
         {
+            foreach (var a in config.forwarders.Forwarder)
+            {
+                a.StopForwarder();
+            }
+
             log.Info("OnStop event");
             log.Info("***********************************************************************************************");
         }
 
         protected override void OnShutdown()
         {
+            foreach (var a in config.forwarders.Forwarder)
+            {
+                a.StopForwarder();
+            }
+
             log.Info("OnShutdown event");
             log.Info("***********************************************************************************************");
         }
 
         protected override bool OnPowerEvent(PowerBroadcastStatus powerStatus)
         {
+            foreach (var a in config.forwarders.Forwarder)
+            {
+                a.StopForwarder();
+            }
+
             log.Info("OnPowerEvent event - cause: " + powerStatus.ToString());
+            log.Info("***********************************************************************************************");
 
             return base.OnPowerEvent(powerStatus);
         }
